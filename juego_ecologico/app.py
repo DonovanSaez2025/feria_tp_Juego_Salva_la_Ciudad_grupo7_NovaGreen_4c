@@ -9,17 +9,9 @@ Rutas:
     POST /api/puntuaciones  -> Guarda una nueva puntuación al terminar la partida.
 """
 
-import secrets
-import string
-import threading
-import time
-import math
-import random
-
+import secrets, string, threading, time, math, random
 from flask import Flask, render_template, request, jsonify
-
-from juego_ecologico.database import (inicializar_bd, guardar_puntuacion,
-                      obtener_mejores_puntuaciones, guardar_resultado)
+from juego_ecologico.database import (inicializar_bd, guardar_puntuacion, obtener_mejores_puntuaciones, guardar_resultado)
 
 app = Flask(__name__)
 inicializar_bd()
@@ -366,7 +358,6 @@ def api_estado_sala(codigo):
         actualizar_mundo_red(sala)
         return jsonify(estado_publico_sala(sala, jugador))
 
-
 @app.post("/api/salas/<codigo>/iniciar")
 def api_iniciar_sala(codigo):
     token = (request.get_json(silent=True) or {}).get("token", "")
@@ -381,7 +372,6 @@ def api_iniciar_sala(codigo):
         iniciar_mundo_red(sala, time.time() + RETARDO_INICIO_RED)
         respuesta = estado_publico_sala(sala, jugador)
     return jsonify(respuesta)
-
 
 @app.post("/api/salas/<codigo>/estado")
 def api_actualizar_jugador(codigo):
@@ -406,7 +396,6 @@ def api_actualizar_jugador(codigo):
         actualizar_mundo_red(sala)
         respuesta = estado_publico_sala(sala, jugador)
     return jsonify(respuesta)
-
 
 if __name__ == "__main__":
     inicializar_bd()
