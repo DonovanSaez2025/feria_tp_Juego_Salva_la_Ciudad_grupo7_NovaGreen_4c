@@ -213,7 +213,6 @@ def api_obtener_puntuaciones():
     mejores = obtener_mejores_puntuaciones(limite=10)
     return jsonify(mejores)
 
-
 @app.route("/api/puntuaciones", methods=["POST"])
 def api_guardar_puntuacion():
     """Recibe el resultado de una partida y lo guarda en la base de datos."""
