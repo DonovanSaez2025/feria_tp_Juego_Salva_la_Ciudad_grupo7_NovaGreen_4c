@@ -218,24 +218,21 @@ def api_obtener_puntuaciones():
 def api_guardar_puntuacion():
     """Recibe el resultado de una partida y lo guarda en la base de datos."""
     datos = request.get_json(silent=True) or {}
-
-    nombre_jugador = str(datos.get("nombre", "")).strip()[:20] or "Anónimo"
+    
+    nombre = datos.get("nombre", "Anónimo").strip()
     puntos = datos.get("puntos", 0)
-    objetos_reciclados = datos.get("objetos_reciclados", 0)
-
-    # Validación básica de tipos para no guardar datos corruptos
+    
+    # Validar que los datos sean correctos antes de guardar
+    if not nombre:
+        nombre = "Anónimo"
+        
     try:
         puntos = int(puntos)
-        objetos_reciclados = int(objetos_reciclados)
-    except (TypeError, ValueError):
-        return jsonify({"error": "Los puntos y objetos reciclados deben ser números"}), 400
+    except (ValueError, TypeError):
+        puntos = 0
 
-    if not 0 <= puntos <= 100_000 or not 0 <= objetos_reciclados <= 1_000:
-        return jsonify({"error": "La puntuación está fuera del rango permitido"}), 400
-
-    nuevo_id = guardar_puntuacion(nombre_jugador, puntos, objetos_reciclados)
-
-    return jsonify({"id": nuevo_id, "mensaje": "Puntuación guardada correctamente"}), 201
+    guardar_puntuacion(nombre, puntos)
+    return jsonify({"status": "success", "message": "Puntuación guardada correctamente"})
 
 
 @app.post("/api/salas")
